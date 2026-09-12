@@ -1,0 +1,4 @@
+#  with plain python we can use "python filename.py" or "py filename.py" but with uv we have to below
+# add "uv run" to previous comands
+#uv pip show langchain to see langcahin version and info
+uv pip install --system langchain langchain-openai
