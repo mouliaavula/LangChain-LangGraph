@@ -2158,4 +2158,1497 @@ print(student)
 student = Student(age = 22) 
 print(student)
 
+=======================================================================================================================================================
+Demo:16:13/09/26:
+
+=================================
+from pydantic import BaseModel, Field
+class Student(BaseModel):
+    name:str
+    age:int | None = Field(default=None, description="if age of student")
+    course:str = Field(description = "coursename")
+
+
+s = Student(
+    name="durga",
+    course="Python"
+    )
+
+
+To get dictionary from Pydantic Object:
+---------------------------------------
+d = s.model_dump() #dict
+=========================================
+from pydantic import BaseModel, Field
+
+class Product(BaseModel):
+
+    name: str = Field(
+        description="Name of the product"
+    )
+
+    category: str = Field(
+        description="Category of the product"
+    )
+
+    price: float = Field(
+        description="Price of the product"
+    )
+
+    in_stock: bool | None = Field(
+	    default = False,
+        description="Whether the product is available"
+    )
+
+p = Product(name = "Iphone18",category = "smartphone",price = 300000,in_stock=True)
+print(p)
+print(p.name)
+print(p.model_dump()) #dict
+print(type(p.model_dump())) #dict
+print(p.model_dump_json()) #json
+print(type(p.model_dump_json())) #json
+
+Note:
+
+product    -->Pydantic Object
+product.name -->Individual Field
+product.model_dump() --->Python dictionary
+product.model_dump_json() --->JSON string
+
+
+LangChain with Structured output:
+-------------------------------
+It means asking the model to return information according to predefined schema instead of returning arbitrary free-form text.
+
+Ravi age 22 years studying python
+
+name=Ravi
+age=22
+course=Python
+
+LangChain defined the method: with_structured_output()
+
+llm = ChatOpenAI(
+    model="gpt-4o-mini",
+    api_key=os.getenv("OPENAI_API_KEY")
+)
+
+structued_llm = llm.with_structured_output(Student)
+
+Create a model wrapper that should return output matching Student schema
+===============================
+import os
+
+from langchain_openai import ChatOpenAI
+from pydantic import BaseModel
+
+class Student(BaseModel):
+    name: str
+    age: int
+    course: str
+
+llm = ChatOpenAI(
+    model="gpt-4o-mini",
+    api_key=os.getenv("OPENAI_API_KEY")
+)
+
+structued_llm = llm.with_structured_output(Student)
+result = structued_llm.invoke(
+  "Ravi is 22 years old and he is learning Python"
+ )
+print(type(result))
+print(result)
+print(result.name)
+print(result.age)
+print(result.course)
+========================
+import os
+
+from langchain_openai import ChatOpenAI
+from pydantic import BaseModel, Field
+
+class Student(BaseModel):
+
+    name: str = Field(
+        description="Name of the student"
+    )
+
+    age: int = Field(
+        description="Age of the student"
+    )
+
+    course: str = Field(
+        description="Course or technology the student is learning"
+    )
+
+llm = ChatOpenAI(
+    model="gpt-5.6",
+    api_key=os.getenv("OPENAI_API_KEY")
+)
+
+structured_llm = llm.with_structured_output(Student)
+
+text = input("Enter student information: ")
+
+result = structured_llm.invoke(text)
+
+print("\nComplete Result:")
+print(result)
+
+print("\nName:")
+print(result.name)
+
+print("\nAge:")
+print(result.age)
+
+print("\nCourse:")
+print(result.course)
+
+
+
+E:\lcclasses>py test.py
+Enter student information: Shiva is a wonderful student learning langchain and his dob is 18-04-1992
+
+Complete Result:
+name='Shiva' age=34 course='LangChain'
+
+Name:
+Shiva
+
+Age:
+34
+
+Course:
+LangChain
+==================================
+import os
+
+from langchain_openai import ChatOpenAI
+from pydantic import BaseModel, Field
+
+class Employee(BaseModel):
+
+    name: str = Field(
+        description="Name of the employee"
+    )
+
+    technology: str = Field(
+        description="Primary technology of the employee"
+    )
+
+    experience: int = Field(
+        description="Years of professional experience"
+    )
+
+llm = ChatOpenAI(
+    model="gpt-5.6",
+    api_key=os.getenv("OPENAI_API_KEY")
+)
+
+structured_llm = llm.with_structured_output(Employee)
+
+text = input("Enter employee information: ")
+
+employee = structured_llm.invoke(text)
+
+print("\nEmployee Details")
+print("----------------")
+print("Name       :", employee.name)
+print("Technology :", employee.technology)
+print("Experience :", employee.experience)
+===============================================
+import os
+
+from langchain_openai import ChatOpenAI
+from pydantic import BaseModel, Field
+
+class Product(BaseModel):
+
+    name: str = Field(
+        description="Name of the product"
+    )
+
+    category: str = Field(
+        description="Product category"
+    )
+
+    price: float = Field(
+        description="Price of the product"
+    )
+
+llm = ChatOpenAI(
+    model="gpt-4o-mini",
+    api_key=os.getenv("OPENAI_API_KEY")
+)
+
+structured_llm = llm.with_structured_output(Product)
+
+text = input("Enter product information: ")
+
+product = structured_llm.invoke(text)
+
+print("\nProduct Object:")
+print(product)
+
+print("\nIndividual Fields:")
+print("Name     :", product.name)
+print("Category :", product.category)
+print("Price    :", product.price)
+
+print("\nAs Dictionary:")
+print(product.model_dump())
+
+print("\nAs JSON:")
+print(product.model_dump_json())
+=========================================
+import os
+
+from langchain_openai import ChatOpenAI
+from pydantic import BaseModel, Field
+
+class Book(BaseModel):
+
+    title: str = Field(
+        description="Title of the book"
+    )
+
+    author: str = Field(
+        description="Author of the book"
+    )
+
+    category: str = Field(
+        description="Category or genre of the book"
+    )
+
+llm = ChatOpenAI(
+    model="gpt-5.6",
+    api_key=os.getenv("OPENAI_API_KEY")
+)
+
+structured_llm = llm.with_structured_output(Book)
+
+result = structured_llm.invoke(
+    "Give information about Atomic Habits."
+)
+
+print(result)
+
+print("\nTitle:", result.title)
+print("Author:", result.author)
+print("Category:", result.category)
+================================================
+
+import os
+
+from langchain_openai import ChatOpenAI
+from pydantic import BaseModel, Field
+
+class Person(BaseModel):
+
+    name: str = Field(
+        description="Name of the person"
+    )
+
+    profession: str = Field(
+        description="Profession of the person"
+    )
+
+    email: str | None = Field(
+        default=None,
+        description="Email address if available"
+    )
+
+llm = ChatOpenAI(
+    model="gpt-5.6",
+    api_key=os.getenv("OPENAI_API_KEY")
+)
+
+structured_llm = llm.with_structured_output(Person)
+
+result = structured_llm.invoke(
+    "Ravi is a Python developer."
+)
+
+print(result)
+
+print("Name:", result.name)
+print("Profession:", result.profession)
+print("Email:", result.email)
+=========================================
+import os
+
+from langchain_openai import ChatOpenAI
+from pydantic import BaseModel, Field
+
+class Person(BaseModel):
+
+    name: str = Field(
+        description="Name of the person"
+    )
+
+    profession: str = Field(
+        description="Profession of the person"
+    )
+
+    experience: int | None = Field(
+        default=None,
+        description="Number of years of professional experience"
+    )
+
+    skills: list[str] = Field(
+        description="Important professional skills"
+    )
+
+llm = ChatOpenAI(
+    model="gpt-5.6",
+    api_key=os.getenv("OPENAI_API_KEY")
+)
+
+structured_llm = llm.with_structured_output(Person)
+
+text = input(
+    "Enter information about a person: "
+)
+
+result = structured_llm.invoke(text)
+
+print("\n--------------------------------")
+print("COMPLETE PYDANTIC OBJECT")
+print("--------------------------------")
+print(result)
+
+print("\n--------------------------------")
+print("OBJECT TYPE")
+print("--------------------------------")
+print(type(result))
+
+print("\n--------------------------------")
+print("INDIVIDUAL FIELDS")
+print("--------------------------------")
+print("Name       :", result.name)
+print("Profession :", result.profession)
+print("Experience :", result.experience)
+print("Skills     :", result.skills)
+
+print("\n--------------------------------")
+print("PYTHON DICTIONARY")
+print("--------------------------------")
+print(result.model_dump())
+
+print("\n--------------------------------")
+print("JSON STRING")
+print("--------------------------------")
+print(result.model_dump_json())
+==================================================
+MCQ 1
+Which output is more application-friendly when individual values are required?
+A. Random paragraph
+B. Structured data
+C. Long story
+D. AIMessage metadata
+
+Ans: B
+
+
+
+
+MCQ 2
+JSON stands for:
+A. Java Standard Object Network
+B. JavaScript Object Notation
+C. JSON Structured Object Name
+D. Java Syntax Object Notation
+
+Ans: B
+
+
+
+MCQ 3
+Which Pydantic class do we commonly inherit from?
+A. AIMessage
+B. BaseModel
+C. ChatOpenAI
+D. PromptTemplate
+
+Ans: B
+
+
+MCQ 4
+What does this mean?
+age: int
+A. Age is an AI model
+B. Age should be an integer
+C. Age is a prompt
+D. Age is always optional
+
+Ans: B
+
+
+MCQ 5
+Which represents an optional email field with a default of no value?
+A.
+email: str
+B.
+email = str
+C.
+email: str | None = None
+D.
+optional(email)
+
+Ans: C
+
+MCQ 6
+What does this do?
+structured_llm = llm.with_structured_output(Student)
+A. Deletes the LLM
+B. Creates a wrapper that returns data following the Student schema
+C. Converts Student to PDF
+D. Creates conversation memory
+
+
+Ans: B
+
+
+================
+Notes:
+Point 1
+Plain text is excellent for humans.
+Structured data is often better for applications.
+
+Point 2
+Unstructured:
+Ravi is 22 and learning Python.
+
+Structured:
+name   = Ravi
+age    = 22
+course = Python
+
+Point 3
+JSON is a common data-interchange format.
+
+Point 4
+JSON and Python dictionaries look similar, but they are not the same concept.
+
+Point 5
+A schema defines what structure our application expects.
+
+
+Point 6
+A field represents one piece of data.
+
+Point 7
+Fields can have different types:
+str
+int
+float
+bool
+list[str]
+
+Point 8
+Pydantic helps us define data models and validate data.
+
+Point 9
+We commonly create Pydantic models using:
+BaseModel
+
+Point 10
+Fields may be required or optional.
+
+Point 11
+Field() can provide descriptions and other field information.
+
+Point 12
+model_dump()
+gives us a Python dictionary.
+
+Point 13
+model_dump_json()
+gives us JSON text.
+
+Point 14
+LangChain provides:
+with_structured_output()
+for schema-based structured model output.
+
+Point 15
+With a Pydantic schema, we can work directly with a Pydantic object.
+=====================================================================================================================================================
+Demo:17:14/09/26:
+---------------
+
+RELIABLE STRUCTURED OUTPUT & REAL-WORLD APPLICATIONS
+-----------------------------------------------------
+2. What Exactly Does with_structured_output() Do?
+--------------------------------------------------
+structured_llm = llm.with_structured_output(Student)
+
+A beginner may think:
+
+Sir, did we modify the original llm object?
+No.
+
+with_structured_output() creates a new Runnable/model wrapper configured to return output matching the supplied schema.
+So:
+
+llm
+ ↓
+Normal Chat Model
+
+
+structured_llm
+ ↓
+Model Wrapper Configured for Structured Output
+
+--------------------
+import os
+
+from langchain_openai import ChatOpenAI
+from pydantic import BaseModel
+
+class Student(BaseModel):
+    name: str
+    age: int
+    course: str
+
+llm = ChatOpenAI(
+    model="gpt-5.6-luna",
+    api_key=os.getenv("OPENAI_API_KEY")
+)
+
+structured_llm = llm.with_structured_output(Student)
+
+print(type(llm))
+print(type(structured_llm))
+-----------------
+E:\lcclasses>py test.py
+<class 'langchain_openai.chat_models.base.ChatOpenAI'>
+<class 'langchain_core.runnables.base.RunnableSequence'>
+
+--------------------
+3. Prove Original Model Still Works Normally
+---------------------------------
+import os
+
+from langchain_openai import ChatOpenAI
+from pydantic import BaseModel
+
+class Student(BaseModel):
+    name: str
+    age: int
+    course: str
+
+llm = ChatOpenAI(
+    model="gpt-5.6-luna",
+    api_key=os.getenv("OPENAI_API_KEY")
+)
+
+structured_llm = llm.with_structured_output(Student)
+
+normal_result = llm.invoke(
+    "Explain Python in one sentence."
+)
+
+structured_result = structured_llm.invoke(
+    "Ravi is 22 years old and learning Python."
+)
+
+print("Normal Result Type:")
+print(type(normal_result))
+
+print("\nStructured Result Type:")
+print(type(structured_result))
+Concept:
+llm.invoke()
+     ↓
+AIMessage
+
+structured_llm.invoke()
+     ↓
+Student Object
+----------------------
+include_raw field:
+===================
+By using this field we can specify whether original LLM response(raw) required to be included in the result or not.
+
+Default value is False.
+
+
+By default:
+llm.with_structured_output(Student)
+
+
+means:
+llm.with_structured_output(
+    Student,
+    include_raw=False
+)
+With a Pydantic schema, if everything succeeds, we directly receive the parsed Pydantic object. If parsing fails, the parsing error is raised. 
+
+Model Response
+     ↓
+Parse + Validate
+     ↓
+Success?
+ ↙          ↘
+Yes          No
+ ↓            ↓
+Student      Error
+Object       Raised
+
+
+6. Why Would We Want the Raw Response?
+------------------------------------
+For debugging purposes
+
+Suppose something goes wrong.
+We may want to know:
+•	What did the model actually return?
+•	Was parsing successful?
+•	What was the parsed object?
+•	Was there a parsing error?
+For debugging, this information is very useful.
+
+LangChain provides:
+include_raw=True
+
+7. Using include_raw=True
+-----------------------------
+Example:
+structured_llm = llm.with_structured_output(
+    Student,
+    include_raw=True
+)
+
+Now the returned result is different.
+Instead of directly getting:
+Student Object
+we get a dictionary containing:
+raw
+parsed
+parsing_error
+Current LangChain defines these three keys when include_raw=True. 
+
+10. Understand raw
+--------------------
+What is:
+result["raw"]
+It is the underlying model response.
+Normally it is a message object such as an:
+AIMessage
+So:
+raw
+ ↓
+Original model-side response
+This is useful when debugging.
+
+11. Understand parsed
+---------------------
+What is:
+result["parsed"]
+If everything succeeds:
+parsed
+  ↓
+Student Object
+Example:
+student = result["parsed"]
+
+print(student.name)
+print(student.age)
+print(student.course)
+Very useful.
+
+12. Understand parsing_error
+---------------------------
+Now:
+result["parsing_error"]
+
+If parsing succeeds:
+None
+If parsing fails:
+Error Information
+
+Therefore:
+parsing_error = None
+        ↓
+Parsing successful
+=========================
+13. Complete include_raw Demonstration
+---------------------------------------
+import os
+
+from langchain_openai import ChatOpenAI
+from pydantic import BaseModel, Field
+
+class Employee(BaseModel):
+
+    name: str = Field(
+        description="Name of the employee"
+    )
+
+    technology: str = Field(
+        description="Primary technology"
+    )
+
+    experience: int = Field(
+        description="Professional experience in years"
+    )
+
+llm = ChatOpenAI(
+    model="gpt-5.6-luna",
+    api_key=os.getenv("OPENAI_API_KEY")
+)
+
+structured_llm = llm.with_structured_output(
+    Employee,
+    include_raw=True
+)
+
+result = structured_llm.invoke(
+    "Ramesh is a Java developer with 6 years of experience."
+)
+
+print("\n---------- RAW ----------")
+print(result["raw"])
+
+print("\n---------- PARSED ----------")
+print(result["parsed"])
+
+print("\n---------- PARSING ERROR ----------")
+print(result["parsing_error"])
+================================
+47. Complete Reliable Application with include_raw=True
+----------------------------------------------------------
+import os
+
+from pydantic import BaseModel, Field
+from langchain_openai import ChatOpenAI
+
+class Student(BaseModel):
+
+    name: str = Field(
+        description="Name of the student"
+    )
+
+    age: int | None = Field(
+        default=None,
+        description="Student age if explicitly provided"
+    )
+
+    technology: str | None = Field(
+        default=None,
+        description="Technology the student is learning"
+    )
+
+    experience: int | None = Field(
+        default=None,
+        description="Experience in years if explicitly provided"
+    )
+
+llm = ChatOpenAI(
+    model="gpt-5.6-luna",
+    api_key=os.getenv("OPENAI_API_KEY")
+)
+
+structured_llm = llm.with_structured_output(
+    Student,
+    include_raw=True
+)
+
+text = input(
+    "Enter information: "
+)
+
+prompt = f"""
+Extract student information.
+
+Rules:
+1. Use only the supplied text.
+2. Do not invent information.
+3. If optional information is unavailable, use null.
+
+Text:
+{text}
+"""
+
+result = structured_llm.invoke(prompt)
+
+if result["parsing_error"] is None:
+
+    student = result["parsed"]
+
+    print("\nParsing Successful")
+
+    print("\nName:")
+    print(student.name)
+
+    print("\nAge:")
+    print(student.age)
+
+    print("\nTechnology:")
+    print(student.technology)
+
+    print("\nExperience:")
+    print(student.experience)
+
+else:
+
+    print("\nParsing Failed")
+
+    print(result["parsing_error"])
+
+    print("\nRaw Model Response:")
+
+    print(result["raw"])
+
+-----------------
+49. include_raw=False vs include_raw=True
+Feature	False	                           True
+Default?	Yes	                    No
+Parsed result	Returned directly	Inside parsed
+Raw model response	No	           raw
+Parsing error	Raised	          Captured in parsing_error
+Useful for simple app	Yes	Yes
+Useful for debugging	Less information	Very useful
+---------------------------------------
+29. Restricted Values with Literal
+======================================
+Suppose sentiment must be only:
+positive
+negative
+neutral
+
+We can use:
+from typing import Literal
+Then:
+sentiment: Literal[
+    "positive",
+    "negative",
+    "neutral"
+]
+Now our schema expresses the allowed categories clearly.
+
+30. First Literal Example
+------------------------
+from pydantic import BaseModel
+from typing import Literal
+
+class Sentiment(BaseModel):
+
+    sentiment: Literal[
+        "positive",
+        "negative",
+        "neutral"
+    ]
+ 
+Instead of arbitrary values like:
+Very Good
+Happy
+Amazing
+Badish
+our application expects one of:
+positive
+negative
+neutral
+
+31. Numeric Validation Rules
+----------------------------
+Pydantic Field() can also define constraints.
+Example:
+confidence: float = Field(
+    ge=0,
+    le=1,
+    description="Confidence score between 0 and 1"
+)
+Meaning:
+ge = greater than or equal to
+le = less than or equal to
+Therefore:
+0 ≤ confidence ≤ 1
+
+32. Sentiment Schema
+from typing import Literal
+from pydantic import BaseModel, Field
+
+class SentimentResult(BaseModel):
+
+    sentiment: Literal[
+        "positive",
+        "negative",
+        "neutral"
+    ] = Field(
+        description="Overall sentiment"
+    )
+
+    confidence: float = Field(
+        ge=0,
+        le=1,
+        description="Confidence score from 0 to 1"
+    )
+
+    reason: str = Field(
+        description="Short reason for the classification"
+    )
+Now our application gets predictable categories.
+-------------------------------------------------
+44. Complete Sentiment Analyzer
+-----------------------------------
+import os
+
+from typing import Literal
+
+from langchain_openai import ChatOpenAI
+from pydantic import BaseModel, Field
+
+class SentimentResult(BaseModel):
+
+    sentiment: Literal[
+        "positive",
+        "negative",
+        "neutral"
+    ] = Field(
+        description="Overall sentiment of the text"
+    )
+
+    confidence: float = Field(
+        ge=0,
+        le=1,
+        description="Confidence score between 0 and 1"
+    )
+
+    reason: str = Field(
+        description="Very short reason for the sentiment"
+    )
+
+llm = ChatOpenAI(
+    model="gpt-5.6-luna",
+    api_key=os.getenv("OPENAI_API_KEY")
+)
+
+structured_llm = llm.with_structured_output(
+    SentimentResult
+)
+
+text = input(
+    "Enter customer feedback: "
+)
+
+result = structured_llm.invoke(text)
+
+print("\nSENTIMENT ANALYSIS")
+print("------------------")
+
+print("Sentiment  :", result.sentiment)
+print("Confidence :", result.confidence)
+print("Reason     :", result.reason)
+=======================================
+45. Why Structured Output Is Excellent Here
+------------------------------------------
+Without structured output:
+
+The customer appears to be very happy...
+But our software may need:
+
+sentiment = positive
+confidence = 0.95
+
+Then our program can write:
+if result.sentiment == "negative":
+    print("Send feedback to support team")
+Now the AI result can directly participate in application logic.
+
+46. Structured Output → Business Logic
+This is very important.
+User Feedback
+     ↓
+LLM
+     ↓
+Structured Result
+     ↓
+Python Condition
+     ↓
+Business Action
+Example:
+if result.sentiment == "negative":
+    print("Escalate to support team")
+
+else:
+    print("No escalation required")
+This is where structured output becomes very powerful.
+=====================
+import os
+
+from typing import Literal
+
+from langchain_openai import ChatOpenAI
+from pydantic import BaseModel, Field
+
+
+class SupportTicket(BaseModel):
+
+    category: Literal[
+        "billing",
+        "technical",
+        "account",
+        "other"
+    ] = Field(
+        description="Main category of the customer issue"
+    )
+
+    priority: Literal[
+        "low",
+        "medium",
+        "high"
+    ] = Field(
+        description="Priority level of the issue"
+    )
+
+    severity: int = Field(
+        ge=1,
+        le=5,
+        description="Severity from 1 to 5"
+    )
+
+    summary: str = Field(
+        description="Very short summary of the customer issue"
+    )
+
+
+llm = ChatOpenAI(
+    model="gpt-5.6-luna",
+    api_key=os.getenv("OPENAI_API_KEY")
+)
+
+
+structured_llm = llm.with_structured_output(
+    SupportTicket
+)
+
+
+text = input(
+    "Enter customer issue: "
+)
+
+
+result = structured_llm.invoke(text)
+
+
+print("\nSUPPORT TICKET")
+print("------------------")
+
+print("Category :", result.category)
+print("Priority :", result.priority)
+print("Severity :", result.severity)
+print("Summary  :", result.summary)
+
+
+input1:
+My payment was deducted twice from my credit card.
+Please refund the extra amount.
+
+input2:
+I forgot my password and cannot login to my account.
+=================================================================================================================================================
+
+Demo-18:15/09/26:
+==========================
+Good Schema Design Rules:
+-------------------------
+1. Keep fields clear. ie meaningful field names we required to use
+
+   class Student(BaseModel):
+       x : str
+       y: int
+ 
+
+class Student(BaseModel):
+       student_name : str
+       age: int
+ 
+2. Highly recommended to use descriptions
+
+age: int = Field(
+     description="age of student"
+     
+     )
+
+3. Choose Correct Data Types
+4. Make truly missing fields optional and provide default values
+  course: str | None = Field(
+       default="Python",
+       description="Name of the course"
+      )
+
+5. Dont create unnecessary fields
+
+
+33. PROJECT 1 — STUDENT INFORMATION EXTRACTOR
+----------------------------------------------
+Requirement:
+User gives:
+Ravi is 22 years old.
+He is learning Python.
+His email is ravi@example.com.
+Our program needs:
+name
+age
+course
+email
+
+34. Student Extractor Program
+----------------------------------
+import os
+
+from langchain_openai import ChatOpenAI
+from pydantic import BaseModel, Field
+
+class Student(BaseModel):
+
+    name: str = Field(
+        description="Name of the student"
+    )
+
+    age: int | None = Field(
+        default=None,
+        description="Age if available"
+    )
+
+    course: str | None = Field(
+        default=None,
+        description="Course the student is learning"
+    )
+
+    email: str | None = Field(
+        default=None,
+        description="Email address if available"
+    )
+
+llm = ChatOpenAI(
+    model="gpt-5.6-luna",
+    api_key=os.getenv("OPENAI_API_KEY")
+)
+
+structured_llm = llm.with_structured_output(Student)
+
+text = input(
+    "Enter student information: "
+)
+
+prompt = f"""
+Extract student information.
+
+Rules:
+- Use only the supplied information.
+- Do not invent missing values.
+- Use null for optional information that is unavailable.
+
+Student Information:
+{text}
+"""
+
+student = structured_llm.invoke(prompt)
+
+print("\nSTUDENT INFORMATION")
+print("-------------------")
+
+print("Name   :", student.name)
+print("Age    :", student.age)
+print("Course :", student.course)
+print("Email  :", student.email)
+
+========================
+
+36. PROJECT 2 — RESUME INFORMATION EXTRACTOR
+-----------------------------------------
+Suppose the resume text says:
+Suresh is a Java developer.
+He has 7 years of experience.
+He knows Java, Spring Boot, SQL and AWS.
+We want:
+name
+job_title
+experience
+skills
+email
+
+38. Complete Resume Extractor
+-----------------------------
+import os
+
+from langchain_openai import ChatOpenAI
+from pydantic import BaseModel, Field
+
+class ResumeInfo(BaseModel):
+
+    name: str | None = Field(
+        default=None,
+        description="Candidate name"
+    )
+
+    job_title: str | None = Field(
+        default=None,
+        description="Candidate job title if available"
+    )
+
+    experience: int | None = Field(
+        default=None,
+        description="Total experience in years if available"
+    )
+
+    skills: list[str] = Field(
+        description="Skills explicitly mentioned in resume"
+    )
+
+    email: str | None = Field(
+        default=None,
+        description="Candidate email if available"
+    )
+
+llm = ChatOpenAI(
+    model="gpt-5.6-luna",
+    api_key=os.getenv("OPENAI_API_KEY")
+)
+
+structured_llm = llm.with_structured_output(
+    ResumeInfo
+)
+
+resume = input(
+    "Enter resume information: "
+)
+
+prompt = f"""
+Extract information from the resume text.
+
+Important:
+- Use only information present in the text.
+- Do not guess missing information.
+- Return missing optional values as null.
+
+Resume:
+{resume}
+"""
+
+result = structured_llm.invoke(prompt)
+
+print("\nRESUME INFORMATION")
+print("------------------")
+
+print("Name       :", result.name)
+print("Job Title  :", result.job_title)
+print("Experience :", result.experience)
+print("Skills     :", result.skills)
+print("Email      :", result.email)
+
+
+
+
+
+40. PROJECT 3 — PRODUCT INFORMATION EXTRACTOR
+---------------------------------------------
+Suppose input:
+The ABC laptop costs ₹65,000.
+It has 16 GB RAM and 512 GB SSD.
+We want:
+name
+price
+ram
+storage
+availability
+
+
+42. Product Extractor Program
+---------------------------------
+import os
+
+from langchain_openai import ChatOpenAI
+from pydantic import BaseModel, Field
+
+class Product(BaseModel):
+
+    name: str = Field(
+        description="Name of the product"
+    )
+
+    price: float | None = Field(
+        default=None,
+        description="Product price if mentioned"
+    )
+
+    ram: str | None = Field(
+        default=None,
+        description="RAM specification if mentioned"
+    )
+
+    storage: str | None = Field(
+        default=None,
+        description="Storage specification if mentioned"
+    )
+
+    availability: bool | None = Field(
+        default=None,
+        description="Whether the product is available, only if explicitly stated"
+    )
+
+llm = ChatOpenAI(
+    model="gpt-5.6-luna",
+    api_key=os.getenv("OPENAI_API_KEY")
+)
+
+structured_llm = llm.with_structured_output(Product)
+
+text = input(
+    "Enter product information: "
+)
+
+prompt = f"""
+Extract product information.
+
+Use only information explicitly available.
+Do not guess missing information.
+
+Product Text:
+{text}
+"""
+
+product = structured_llm.invoke(prompt)
+
+print(product)
+
+print("\nAs Dictionary:")
+print(product.model_dump())
+
+print("\nAs JSON:")
+print(product.model_dump_json())
+
+43. PROJECT 4 — SENTIMENT ANALYZER
+------------------------------------
+Suppose customer writes:
+The course was excellent.
+The explanations were easy to understand.
+
+Our application needs:
+sentiment
+confidence
+reason
+
+44. Complete Sentiment Analyzer
+--------------------------------
+import os
+
+from typing import Literal
+
+from langchain_openai import ChatOpenAI
+from pydantic import BaseModel, Field
+
+class SentimentResult(BaseModel):
+
+    sentiment: Literal[
+        "positive",
+        "negative",
+        "neutral"
+    ] = Field(
+        description="Overall sentiment of the text"
+    )
+
+    confidence: float = Field(
+        ge=0,
+        le=1,
+        description="Confidence score between 0 and 1"
+    )
+
+    reason: str = Field(
+        description="Very short reason for the sentiment"
+    )
+
+llm = ChatOpenAI(
+    model="gpt-5.6-luna",
+    api_key=os.getenv("OPENAI_API_KEY")
+)
+
+structured_llm = llm.with_structured_output(
+    SentimentResult
+)
+
+text = input(
+    "Enter customer feedback: "
+)
+
+result = structured_llm.invoke(text)
+
+print("\nSENTIMENT ANALYSIS")
+print("------------------")
+
+print("Sentiment  :", result.sentiment)
+print("Confidence :", result.confidence)
+print("Reason     :", result.reason)
+========================
+MCQ 1
+When include_raw=True, what is returned?
+A. Only string
+B. Only AIMessage
+C. Dictionary containing raw, parsed, and parsing_error
+D. PromptTemplate
+
+
+Ans: C
+
+MCQ 2
+What normally appears in:
+result["parsed"]
+when we supplied a Pydantic schema and parsing succeeded?
+A. Prompt
+B. Parsed Pydantic object
+C. API key
+D. Input text only
+
+Ans: B
+
+
+MCQ 3
+If:
+result["parsing_error"] is None
+what does it mean?
+A. Parsing succeeded
+B. API key missing
+C. Model was deleted
+D. Schema is a string
+
+Ans: A
+________________________________________
+MCQ 4
+If a value may genuinely be missing, which design may be appropriate?
+
+A.
+email: str | None = None
+B.
+email = AIMessage
+C.
+email = ChatOpenAI
+D.
+email = PromptTemplate
+
+
+Ans: A
+
+
+ MCQ 5
+Does structured output automatically guarantee that every fact generated by the model is correct?
+
+A. Yes
+B. No
+Answer
+B — No
+Structured output mainly gives us predictable structure and validation.
+
+ MCQ 6
+Which is a good extraction instruction?
+
+A. Invent anything missing
+B. Use only provided information and represent unavailable optional values as null
+C. Ignore schema
+D. Always generate paragraphs
+
+Ans: B
+
 
