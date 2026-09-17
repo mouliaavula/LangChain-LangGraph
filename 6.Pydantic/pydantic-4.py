@@ -6,7 +6,7 @@ class Student(BaseModel):
     course:str
 
 # pydantic will perform validations against schema
-#===Filed missing============================================================================
+#===Field missing============================================================================
 # s = Student(name='Mouli',age=44)
 
 #o/p:
@@ -37,8 +37,3 @@ Error raised:  1 validation error for Student
 course
   Field required [type=missing, input_value={'name': 'Mouli', 'age': 44}, input_type=dict]    
 '''
-    
-    
-
-
-

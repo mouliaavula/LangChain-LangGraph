@@ -17,3 +17,6 @@ while True:
     ai_msg = llm.invoke(msgs)
     msgs.append(ai_msg)
     print(ai_msg.content)
+    
+    # for new request/input/question , by passing previous all messages (system, human and ai messages) will make model 
+    # to remember previous conversation history

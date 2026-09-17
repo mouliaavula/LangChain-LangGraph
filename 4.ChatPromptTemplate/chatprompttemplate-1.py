@@ -19,16 +19,24 @@ chat_template = ChatPromptTemplate.from_messages(
 # <class 'langchain_core.prompts.chat.ChatPromptTemplate'>
 #print(chat_template)
 """ 
-    input_variables=[] input_types={} partial_variables={} messages=[SystemMessage(content='You are a helpful python trainer', additional_kwargs={}, response_metadata={}), HumanMessage(content='Explain loops in python', additional_kwargs={}, response_metadata={}), AIMessage(content='Loops are important concept in python', additional_kwargs={}, response_metadata={}, tool_calls=[], invalid_tool_calls=[]), HumanMessage(content='Explain conditional statements in python', additional_kwargs={}, response_metadata={})]
+o/p:
+    input_variables=[] input_types={} partial_variables={} messages=[SystemMessage(content='You are a helpful python trainer', 
+    additional_kwargs={}, response_metadata={}), HumanMessage(content='Explain loops in python', additional_kwargs={},
+    response_metadata={}), AIMessage(content='Loops are important concept in python', additional_kwargs={},
+    response_metadata={}, tool_calls=[], invalid_tool_calls=[]),
+    HumanMessage(content='Explain conditional statements in python', additional_kwargs={}, response_metadata={})]
 """
 
 chat_prompt = chat_template.invoke({})
-#print(type(chat_prompt))
+print(type(chat_prompt))
 #<class 'langchain_core.prompt_values.ChatPromptValue'>
-#print(chat_prompt)
+print()
+print(chat_prompt)
+print()
+print(chat_prompt.messages)
 
-#for message in chat_prompt.messages:
-#    print(type(message).__name__,":",message.content)
+for message in chat_prompt.messages:
+    print(type(message).__name__,":",message.content)
     
 llm = ChatOpenAI(model='gpt-4.1-mini',api_key=os.getenv("OPENAI_API_KEY"))
 response = llm.invoke(chat_prompt)

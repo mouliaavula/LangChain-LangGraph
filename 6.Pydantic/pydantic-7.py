@@ -1,6 +1,13 @@
 # Field: Sometime field names alone may not enough so we can provide field description 
 # so that LLM can understand more clearly 
 
+'''
+In Pydantic, Field() is used to give extra information, rules, or constraints to a field.
+BaseModel → defines the structure
+Type annotation → defines the data type
+Field() → adds rules, defaults, descriptions, and metadata
+'''
+
 from pydantic import BaseModel,Field
 
 class Student(BaseModel):

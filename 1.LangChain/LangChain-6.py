@@ -11,5 +11,5 @@ ai_message = llm.invoke(human_message)
 print(ai_message.content)
 
 
-# ValueError: Invalid input type must be promptvalue , str, ot list
+# ValueError: Invalid input type must be PromptValue or str or list or dict
 

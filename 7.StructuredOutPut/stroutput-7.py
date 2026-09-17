@@ -8,6 +8,7 @@ class Employee(BaseModel):
     experience:int = Field(description='Professional Experience in years')
     
 llm = ChatOpenAI(model='gpt-5.6-luna',api_key=os.getenv("OPENAI_API_KEY"))
+#str_llm = llm.with_structured_output(Employee)
 str_llm = llm.with_structured_output(Employee,include_raw=True)
 result = str_llm.invoke("Ravi is java developer with 6 years of experience")
 
@@ -16,3 +17,16 @@ print("\n Result: ",result)
 print("\n Raw message:", result["raw"])
 print("\n Parsed message:", result["parsed"])
 print("\n Parsing Error:", result["parsing_error"])
+
+print()
+print(type(result["parsed"]))
+#o/p:<class '__main__.Employee'>
+
+""""
+type(result) without include_raw=True is: <class '__main__.Employee'>
+type(result) with include_raw=True is: <class 'dict'>
+
+print(type(result["parsed"]))
+#o/p:<class '__main__.Employee'>
+
+"""

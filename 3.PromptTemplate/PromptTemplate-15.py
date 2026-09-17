@@ -19,6 +19,7 @@ prompt = template.invoke({
 print(prompt.to_string())
 # o/p: Explain java at Beginner level
 """
+#==============================================================================================================
 """
 # In partial variables it is not compulsory to define default values for all input variables
 
@@ -33,7 +34,7 @@ prompt = template.invoke({
 print(prompt.to_string())
 
 """
-
+#=============================================================================================================
 """
 template = PromptTemplate.from_template("Explain {topic} at {level} level",
                                         partial_variables={
@@ -48,6 +49,7 @@ prompt = template.invoke({
 print(prompt.to_string())
 
 """
+# ==============================================================================================================
 
 template = PromptTemplate.from_template("Explain {topic} at {level} level",
                                         partial_variables={

@@ -8,7 +8,7 @@ class Student:
         print("I am "+self.name+ " eating ....")
 s1 = Student("Mouli",100)
 s2 = Student("Neethu",200)
-print(s1)
+print(s1) # s1 passed as self implicitly
 s1.eat()
 print(s2)
 s2.eat()

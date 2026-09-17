@@ -11,6 +11,6 @@ p = Product(name='Apple iphone 18',category='Smart Phone',price=165000,in_stock=
 print(type(p))
 print(p)
 print(type(p.model_dump()))  # dict
-print(p.model_dump()) # to get dict object
+print(p.model_dump()) # to get python dict object
 print(type(p.model_dump_json()))# json
 print(p.model_dump_json())#to get json object

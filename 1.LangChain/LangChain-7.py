@@ -16,3 +16,6 @@ ai_message2 = llm.invoke([human_message1, ai_message1,human_message2])
 print(ai_message2.content)
 
 
+# for 2nd request ie. for human message2 we are passing previous human message 1, ai message so that model can remember 
+# previous conversion 
+
