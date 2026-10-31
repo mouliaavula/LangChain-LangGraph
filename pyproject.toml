@@ -5,6 +5,8 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "beautifulsoup4>=4.15.0",
+    "bs4>=0.0.2",
     "langchain",
     "langchain-community",
     "langchain-core",
@@ -12,6 +14,8 @@ dependencies = [
     "langgraph",
     "pydantic>=2.13.5",
     "pypdf>=6.21.2",
+    "reportlab>=5.1.0",
+    "requests>=2.34.2",
 ]
 
 [tool.uv]
